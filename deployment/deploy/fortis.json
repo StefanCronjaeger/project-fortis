@@ -1,0 +1,736 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "geoTwitHostingPlanName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hostingPlanName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "geoTwitSkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes geoTwit plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "metadata": {
+        "description": "Describes geoTwit plan's instance count"
+      }
+    },
+    "geoTwitSkuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "metadata": {
+        "description": "Describes geoTwit plan's instance count"
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "deploymentPostFix": {
+      "type": "string",
+      "minLength": 1
+    },
+    "geoTwitConsumerKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "geoTwitConsumerSecret": {
+      "type": "string",
+      "minLength": 1
+    },
+    "geoTwitAccessTokenKey": {
+      "type": "string",
+      "minLength": 1
+    },
+    "geoTwitAccessTokenSecret": {
+      "type": "string",
+      "minLength": 1
+    },
+    "geoTwitBoundingBox": {
+      "type": "string",
+      "metadata": {
+        "description": "geo bounding box: S-lon, W-lat, N-lon, E-lat"
+      }
+    },
+    "geoTwitLanguageFilter": {
+      "type": "string"
+    },
+    "geoTwitFilterKeywords": {
+      "type": "string"
+    },
+    "postgresAdminUsername": {
+      "type": "string",
+      "defaultValue": "spatialuser"
+    },
+    "postgresAdminPassword": {
+      "type": "string"
+    },
+    "postgresDnsNamePrefix": {
+      "type": "string"
+    },
+    "postgresVmSize": {
+      "type": "string",
+      "defaultValue": "Standard_DS3_v2",
+      "allowedValues": [
+        "Standard_DS3_v2"
+      ],
+      "metadata": {
+        "description": "The size of the virtual machines used when provisioning"
+      }
+    },
+    "postgresUbuntuOSVersion": {
+      "type": "string",
+      "defaultValue": "14.04.2-LTS",
+      "allowedValues": [
+        "12.04.5-LTS",
+        "14.04.2-LTS",
+        "16.04.0-LTS"
+      ],
+      "metadata": {
+        "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version. Allowed values: 12.04.5-LTS, 14.04.2-LTS, 15.10."
+      }
+    },
+    "postgresDeploymentScriptUris": {
+      "type": "string"
+    },
+    "deploymentAccountName": {
+      "type": "string"
+    },
+    "deploymentAccountKey": {
+      "type": "string"
+    },
+    "translationServiceClientId": {
+      "type": "string"
+    },
+    "translationServiceClientSecret": {
+      "type": "string"
+    },
+    "eventHubNameKeywords": {
+      "type": "string"
+    },
+    "eventHubSendPrimaryKeyKeywords": {
+      "type": "string"
+    },
+    "eventHubSendSecondaryKeyKeywords": {
+      "type": "string"
+    },
+    "eventHubListenPrimaryKeyKeywords": {
+      "type": "string"
+    },
+    "eventHubListenSecondaryKeyKeywords": {
+      "type": "string"
+    },
+    "eventHubNameFacts": {
+      "type": "string"
+    },
+    "eventHubSendPrimaryKeyFacts": {
+      "type": "string"
+    },
+    "eventHubSendSecondaryKeyFacts": {
+      "type": "string"
+    },
+    "eventHubListenPrimaryKeyFacts": {
+      "type": "string"
+    },
+    "eventHubListenSecondaryKeyFacts": {
+      "type": "string"
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "hdiControllerName": {
+      "type": "string"
+    },
+    "hdiClusterName": {
+      "type": "string"
+    },
+    "messagesContainer": {
+      "type": "string",
+      "defaultValue": "fortis-messages"
+    },
+    "processedMessagesContainer": {
+      "type": "string",
+      "defaultValue": "processed-messages"
+    },
+    "tilesContainer": {
+      "type": "string",
+      "defaultValue": "processed-tiles"
+    },
+    "tilesIncrementalContainer": {
+      "type": "string",
+      "defaultValue": "processed-tiles-prev"
+    },
+    "timeSeriesContainer": {
+      "type": "string",
+      "defaultValue": "processed-timeseries-bysource"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    }
+  },
+  "variables": {
+    "uniqueId": "[parameters('deploymentPostFix')]",
+    "dataStorageAccountName": "[toLower(concat('fortisdata', variables('uniqueId')))]",
+    "geoTwitStorageAccountName": "[toLower(concat('fortisgeotwit', variables('uniqueId')))]",
+    "clusterStorageAccountName": "[toLower(concat('fortishdicluster', variables('uniqueId')))]",
+    "location": "[resourceGroup().location]",
+    "sbListenOnlyKeyName": "ListenOnlyKey",
+    "ehVersion": "2014-09-01",
+    "defaultSASKeyName": "RootManageSharedAccessKey",
+    "eventHubNamespaceKeywords": "[concat('FortisEHKeywords', parameters('deploymentPostFix'))]",
+    "authRuleResourceIdKeywords": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespaceKeywords'), variables('defaultSASKeyName'))]",
+    "sendauthRuleResourceIdKeywords": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespaceKeywords'), 'SendOnlyKey')]",
+    "listenauthRuleResourceIdKeywords": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespaceKeywords'), 'ListenOnlyKey')]",
+    "eventHubNamespaceFacts": "[concat('FortisEHFacts', parameters('deploymentPostFix'))]",
+    "authRuleResourceIdFacts": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespaceFacts'), variables('defaultSASKeyName'))]",
+    "sendauthRuleResourceIdFacts": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespaceFacts'), 'SendOnlyKey')]",
+    "listenauthRuleResourceIdFacts": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespaceFacts'), 'ListenOnlyKey')]",
+    "keywordsSAJobName": "[concat('FortisSAKeywords', parameters('deploymentPostFix'))]",
+    "geoTwitWebSiteName": "[concat('FortisGeoTwit-', variables('uniqueId'))]",
+    "dashboardWebSiteName": "[concat('FortisDashboard-', variables('uniqueId'))]",
+    "functionsWebSiteName": "[concat('FortisFunctions-', variables('uniqueId'))]",
+    "webJobsWebSiteName": "[concat('FortisWebJobs-', variables('uniqueId'))]",
+    "servicesWebSiteName": "[concat('FortisServices-', variables('uniqueId'))]",
+    "servicesTemplateUrl": "[concat( parameters('_artifactsLocation'), '/fortis-services.json', parameters('_artifactsLocationSasToken'))]",
+    "clientTemplateUrl": "[concat( parameters('_artifactsLocation'), '/fortis-interface.json', parameters('_artifactsLocationSasToken'))]",
+    "functionsTemplateUrl": "[concat( parameters('_artifactsLocation'), '/fortis-functions.json', parameters('_artifactsLocationSasToken'))]",
+    "webjobsTemplateUrl": "[concat( parameters('_artifactsLocation'), '/fortis-webjobs.json', parameters('_artifactsLocationSasToken'))]",
+    "geoTwitTemplateUrl": "[concat( parameters('_artifactsLocation'), '/fortis-geotwit.json', parameters('_artifactsLocationSasToken'))]",
+    "postgresqlTemplateUrl": "[concat( parameters('_artifactsLocation'), '/fortis-postgresql.json', parameters('_artifactsLocationSasToken'))]",
+    "applicationInsightWebJobsName": "[concat('FortisWebJobsAppInsight-', variables('uniqueId'))]",
+    "reactAppSiteHost": "[concat('https://', variables('servicesWebSiteName'), '.azurewebsites.net')]",
+    "preNlpQueueName" :  "prenlpinput"
+  },
+
+  "resources": [
+    {
+      "apiVersion": "2015-08-01",
+      "name": "[parameters('hostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "displayName": "HostingPlan"
+      },
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "capacity": "[parameters('skuCapacity')]"
+      },
+      "properties": {
+        "name": "[parameters('hostingPlanName')]"
+      }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "FortisGeoTwit",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[concat('Microsoft.Storage/storageAccounts/', variables('geoTwitStorageAccountName'))]"
+      ],
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[variables('geoTwitTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "geoTwitHostingPlanName": { "value": "[parameters('geoTwitHostingPlanName')]" },
+          "geoTwitSkuName": { "value": "[parameters('geoTwitSkuName')]" },
+          "geoTwitSkuCapacity": { "value": "[parameters('geoTwitSkuCapacity')]" },
+          "webSiteName": { "value": "[variables('geoTwitWebSiteName')]" },
+          "uniqueId": { "value": "[variables('uniqueId')]" },
+          "geoTwitLanguageFilter": { "value": "[parameters('geoTwitLanguageFilter')]" },
+          "geoTwitStorageAccountName": { "value": "[variables('geoTwitStorageAccountName')]" },
+          "geoTwitFilterKeywords": { "value": "[parameters('geoTwitFilterKeywords')]" },
+          "geoTwitBoundingBox": { "value": "[parameters('geoTwitBoundingBox')]" },
+          "geoTwitConsumerKey": { "value": "[parameters('geoTwitConsumerKey')]" },
+          "geoTwitConsumerSecret": { "value": "[parameters('geoTwitConsumerSecret')]" },
+          "geoTwitAccessTokenKey": { "value": "[parameters('geoTwitAccessTokenKey')]" },
+          "geoTwitAccessTokenSecret": { "value": "[parameters('geoTwitAccessTokenSecret')]" }
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "FortisWebjobs",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('dataStorageAccountName'))]"
+      ],
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[variables('webjobsTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "hostingPlanName": { "value": "[parameters('hostingPlanName')]" },
+          "webSiteName": { "value": "[variables('webJobsWebSiteName')]" },
+          "dataStorageAccountName": { "value": "[variables('dataStorageAccountName')]" },
+          "uniqueId": { "value": "[variables('uniqueId')]" },
+          "reactAppSiteHost": { "value": "[variables('reactAppSiteHost')]" },
+          "siteName": { "value": "[parameters('siteName')]" },
+          "preNlpQueueName": { "value": "[variables('preNlpQueueName')]" }
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "Postress",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+      ],
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[variables('postgresqlTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "adminUsername": { "value": "[parameters('postgresAdminUsername')]" },
+          "adminPassword": { "value": "[parameters('postgresAdminPassword')]" },
+          "dnsNamePrefix": { "value": "[parameters('postgresDnsNamePrefix')]" },
+          "vmSize": { "value": "[parameters('postgresVmSize')]" },
+          "ubuntuOSVersion": { "value": "[parameters('postgresUbuntuOSVersion')]" },
+          "deploymentAccountName": { "value": "[parameters('deploymentAccountName')]" },
+          "deploymentAccountKey": { "value": "[parameters('deploymentAccountKey')]" },
+          "deploymentScriptUris": { "value": "[parameters('postgresDeploymentScriptUris')]" },
+          "_artifactsLocationSasToken": { "value": "[parameters('_artifactsLocationSasToken')]" },
+          "_artifactsLocation": { "value": "[parameters('_artifactsLocation')]" }
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "FortisFunctions",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('dataStorageAccountName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('geoTwitStorageAccountName'))]",
+        "[variables('sendauthRuleResourceIdKeywords')]"
+      ],
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[variables('functionsTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "hostingPlanName": { "value": "[parameters('hostingPlanName')]" },
+          "webSiteName": { "value": "[variables('functionsWebSiteName')]" },
+          "dataStorageAccountName": { "value": "[variables('dataStorageAccountName')]" },
+          "uniqueId": { "value": "[variables('uniqueId')]" },
+          "reactAppSiteHost": { "value": "[variables('reactAppSiteHost')]" },
+          "siteName": { "value": "[parameters('siteName')]" },
+          "eventHubConnectionStringKeywords": { "value": "[listkeys(variables('sendauthRuleResourceIdKeywords'), variables('ehVersion')).primaryConnectionString]" },
+          "eventHubNameKeywords": { "value": "[parameters('eventHubNameKeywords')]" },
+          "eventHubConnectionStringFacts": { "value": "[listkeys(variables('sendauthRuleResourceIdFacts'), variables('ehVersion')).primaryConnectionString]" },
+          "eventHubNameFacts": { "value": "[parameters('eventHubNameFacts')]" },
+          "geoTwitStorageAccountName": { "value": "[variables('geoTwitStorageAccountName')]" },
+          "clusterStorageAccountName": { "value": "[variables('clusterStorageAccountName')]" },
+          "hdiControllerName": { "value": "[parameters('hdiControllerName')]" },
+          "hdiClusterName": { "value": "[parameters('hdiClusterName')]" },
+          "messagesContainer": { "value": "[parameters('messagesContainer')]" },
+          "processedMessagesContainer": { "value": "[parameters('processedMessagesContainer')]" },
+          "tilesContainer": { "value": "[parameters('tilesContainer')]" },
+          "tilesIncrementalContainer": { "value": "[parameters('tilesIncrementalContainer')]" },
+          "timeSeriesContainer": { "value": "[parameters('timeSeriesContainer')]" },
+          "preNlpQueueName": { "value": "[variables('preNlpQueueName')]" }
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "FortisClient",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('dataStorageAccountName'))]"
+      ],
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[variables('clientTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "hostingPlanName": { "value": "[parameters('hostingPlanName')]" },
+          "webSiteName": { "value": "[variables('dashboardWebSiteName')]" },
+          "dataStorageAccountConnectionString": { "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('dataStorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('dataStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]" },
+          "uniqueId": { "value": "[variables('uniqueId')]" },
+          "reactAppSiteHost": { "value": "[variables('reactAppSiteHost')]" },
+          "siteName": { "value": "[parameters('siteName')]" }
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-01-01",
+      "name": "FortisServices",
+      "type": "Microsoft.Resources/deployments",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('dataStorageAccountName'))]"
+      ],
+      "properties": {
+        "mode": "incremental",
+        "templateLink": {
+          "uri": "[variables('servicesTemplateUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "hostingPlanName": { "value": "[parameters('hostingPlanName')]" },
+          "webSiteName": { "value": "[variables('servicesWebSiteName')]" },
+          "dataStorageAccountName": { "value": "[variables('dataStorageAccountName')]" },
+          "uniqueId": { "value": "[variables('uniqueId')]" },
+          "translationServiceClientId": { "value": "[parameters('translationServiceClientId')]" },
+          "translationServiceClientSecret": { "value": "[parameters('translationServiceClientSecret')]" }
+        }
+      }
+    },
+
+    {
+      "name": "[variables('geoTwitStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "gwoTwitStorageAccountName"
+      },
+      "properties": {
+        "accountType": "[parameters('storageAccountType')]"
+
+      }
+    },
+    {
+      "name": "[variables('dataStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "dataStorageAccountName"
+      },
+      "properties": {
+        "accountType": "[parameters('storageAccountType')]",
+        "cors": {
+          "allowedHeaders": [ "*" ],
+          "allowedMethods": [ "get", "post", "put" ],
+          "allowedOrigins": [ "*" ],
+          "exposedHeaders": [ "*" ],
+          "maximumAge": 5
+        }
+      }
+    },
+    {
+      "name": "[variables('clusterStorageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "clusterStorageAccountName"
+      },
+      "properties": {
+        "accountType": "[parameters('storageAccountType')]"
+      }
+    },
+    {
+      "apiVersion": "[variables('ehVersion')]",
+      "name": "[variables('eventHubNamespaceKeywords')]",
+      "type": "Microsoft.EventHub/namespaces",
+      "location": "[variables('location')]",
+      "resources": [
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[parameters('eventHubNameKeywords')]",
+          "type": "eventHubs",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceKeywords'))]"
+          ],
+          "properties": {
+            "path": "[parameters('eventHubNameKeywords')]"
+          }
+        },
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[concat(variables('eventHubNamespaceKeywords'),'/SendOnlyKey')]",
+          "type": "Microsoft.EventHub/namespaces/authorizationRules",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceKeywords'))]"
+          ],
+          "location": "[variables('location')]",
+          "properties": {
+            "KeyName": "SendOnlyKey",
+            "ClaimType": "SendSharedAccessKey",
+            "ClaimValue": "None",
+            "PrimaryKey": "[parameters('eventHubSendPrimaryKeyKeywords')]",
+            "SecondaryKey": "[parameters('eventHubSendSecondaryKeyKeywords')]",
+            "Rights": [ "Send" ],
+            "Revision": -1
+          }
+        },
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[concat(variables('eventHubNamespaceKeywords'),'/',variables('sbListenOnlyKeyName'))]",
+          "type": "Microsoft.EventHub/namespaces/authorizationRules",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceKeywords'))]"
+          ],
+          "location": "[variables('location')]",
+          "properties": {
+            "KeyName": "ListenOnlyKey",
+            "ClaimType": "ReceiveSharedAccessKey",
+            "ClaimValue": "None",
+            "PrimaryKey": "[parameters('eventHubListenPrimaryKeyKeywords')]",
+            "SecondaryKey": "[parameters('eventHubListenSecondaryKeyKeywords')]",
+            "Rights": [ "Listen" ],
+            "Revision": -1
+          }
+        }
+      ]
+    },
+
+    {
+      "apiVersion": "[variables('ehVersion')]",
+      "name": "[variables('eventHubNamespaceFacts')]",
+      "type": "Microsoft.EventHub/namespaces",
+      "location": "[variables('location')]",
+      "resources": [
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[parameters('eventHubNameFacts')]",
+          "type": "eventHubs",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceFacts'))]"
+          ],
+          "properties": {
+            "path": "[parameters('eventHubNameFacts')]"
+          }
+        },
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[concat(variables('eventHubNamespaceFacts'),'/SendOnlyKey')]",
+          "type": "Microsoft.EventHub/namespaces/authorizationRules",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceFacts'))]"
+          ],
+          "location": "[variables('location')]",
+          "properties": {
+            "KeyName": "SendOnlyKey",
+            "ClaimType": "SendSharedAccessKey",
+            "ClaimValue": "None",
+            "PrimaryKey": "[parameters('eventHubSendPrimaryKeyFacts')]",
+            "SecondaryKey": "[parameters('eventHubSendSecondaryKeyFacts')]",
+            "Rights": [ "Send" ],
+            "Revision": -1
+          }
+        },
+        {
+          "apiVersion": "[variables('ehVersion')]",
+          "name": "[concat(variables('eventHubNamespaceFacts'),'/',variables('sbListenOnlyKeyName'))]",
+          "type": "Microsoft.EventHub/namespaces/authorizationRules",
+          "dependsOn": [
+            "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceFacts'))]"
+          ],
+          "location": "[variables('location')]",
+          "properties": {
+            "KeyName": "ListenOnlyKey",
+            "ClaimType": "ReceiveSharedAccessKey",
+            "ClaimValue": "None",
+            "PrimaryKey": "[parameters('eventHubListenPrimaryKeyFacts')]",
+            "SecondaryKey": "[parameters('eventHubListenSecondaryKeyFacts')]",
+            "Rights": [ "Listen" ],
+            "Revision": -1
+          }
+        }
+      ]
+    },
+    {
+      "name": "[variables('keywordsSAJobName')]",
+      "type": "Microsoft.StreamAnalytics/streamingjobs",
+      "location": "[variables('Location')]",
+      "apiVersion": "2015-09-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('dataStorageAccountName'))]",
+        "[variables('listenauthRuleResourceIdKeywords')]"
+      ],
+      "properties": {
+        "sku": {
+          "name": "Standard"
+        },
+        "eventsOutOfOrderPolicy": "drop",
+        "eventsOutOfOrderMaxDelayInSeconds": 10,
+        "inputs": [
+          {
+            "name": "keywordsIngest",
+            "properties": {
+              "type": "stream",
+              "serialization": {
+                "type": "JSON",
+                "properties": {
+                  "encoding": "UTF8"
+                }
+              },
+              "datasource": {
+                "type": "Microsoft.ServiceBus/EventHub",
+                "properties": {
+                  "serviceBusNamespace": "[variables('eventHubNamespaceKeywords')]",
+                  "sharedAccessPolicyName": "[variables('sbListenOnlyKeyName')]",
+                  "sharedAccessPolicyKey": "[parameters('eventHubListenPrimaryKeyKeywords')]",
+                  "eventHubName": "[parameters('eventHubNameKeywords')]"
+                }
+              }
+            }
+          }
+        ],
+        "transformation": {
+          "name": "ProcessKeywordsData",
+          "properties": {
+            "streamingUnits": 1,
+            "query": "SELECT * INTO keywordsOutput FROM keywordsIngest WHERE GetArrayLength(Locations) > 0"
+          }
+        },
+        "outputs": [
+          {
+            "name": "keywordsOutput",
+            "properties": {
+              "type": "reference",
+              "serialization": {
+                "type": "JSON",
+                "properties": {
+                  "encoding": "UTF8"
+                }
+              },
+              "datasource": {
+                "type": "Microsoft.Storage/Blob",
+                "properties": {
+                  "storageAccounts": [
+                    {
+                      "accountName": "[variables('dataStorageAccountName')]",
+                      "accountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('dataStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+                    }
+                  ],
+                  "pathPattern": "{date}",
+                  "dateFormat": "yyyy-MM-dd",
+                  "timeFormat": "HH",
+                  "container": "fortis-messages",
+                  "blobPathPrefix": ""
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+    "outputs": {
+      "dataStorageAccountName": {
+        "type": "string",
+        "value": "[variables('dataStorageAccountName')]"
+      },
+      "dataStorageAccountKey": {
+        "type": "string",
+        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('dataStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      },
+      "dataStorageAccountConnectionString": {
+        "type": "string",
+        "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('dataStorageAccountName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('dataStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value)]"
+      },
+      "clusterStorageAccountName": {
+        "type": "string",
+        "value": "[variables('clusterStorageAccountName')]"
+      },
+      "clusterStorageAccountKey": {
+        "type": "string",
+        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('clusterStorageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      },
+      "webJobWebSiteName": {
+        "type": "string",
+        "value": "[variables('WebJobsWebSiteName')]"
+      },
+      "functionsWebSiteName": {
+        "type": "string",
+        "value": "[variables('FunctionsWebSiteName')]"
+      },
+      "dashboardWebSiteName": {
+        "type": "string",
+        "value": "[variables('DashboardWebSiteName')]"
+      },
+      "geoTwitWebSiteName": {
+        "type": "string",
+        "value": "[variables('GeoTwitWebSiteName')]"
+      },
+      "servicesWebSiteName": {
+        "type": "string",
+        "value": "[variables('ServicesWebSiteName')]"
+      },
+      "keywordsSAJobName": {
+        "type": "string",
+        "value": "[variables('keywordsSAJobName')]"
+      }
+    }
+  }

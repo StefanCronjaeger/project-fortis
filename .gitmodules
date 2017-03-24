@@ -1,0 +1,24 @@
+[submodule "fortis-services"]
+	path = fortis-services
+	url = https://github.com/CatalystCode/project-fortis-services
+	branch = master
+[submodule "fortis-interfaces"]
+	path = fortis-interfaces
+	url = https://github.com/CatalystCode/project-fortis-interfaces
+	branch = master
+[submodule "fortis-functions"]
+	path = fortis-functions
+	url = https://github.com/CatalystCode/project-fortis-azure-functions
+	branch = master
+[submodule "fortis-webjobs"]
+	path = fortis-webjobs
+	url = https://github.com/CatalystCode/project-fortis-azure-webjobs
+	branch = master
+[submodule "hdinsight-controller"]
+	path = hdinsight-controller
+	url = https://github.com/CatalystCode/hdinsight-controller
+	branch = master
+[submodule "fortis-geotwit"]
+	path = fortis-geotwit
+	url = https://github.com/CatalystCode/pct-geotwit
+	branch = master

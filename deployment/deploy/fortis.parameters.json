@@ -1,0 +1,33 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hostingPlanName": {
+      "value": "fortisplan"
+    },
+    "skuName": {
+      "value": "S1"
+    },
+    "skuCapacity": {
+      "value": 1
+    },
+    "geoTwitHostingPlanName": {
+      "value": "fortis-geotwit-plan"
+    },
+    "geoTwitSkuName": {
+      "value": "S1"
+    },
+    "geoTwitSkuCapacity": {
+      "value": 1
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "eventHubNameKeywords": {
+      "value": "keywords-eventhub"
+    },
+    "eventHubNameFacts": {
+      "value": "facts-eventhub"
+    }
+  }
+}
