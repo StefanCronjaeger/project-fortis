@@ -1,16 +1,25 @@
 # Fortis
-Fortis implements a pipeline to observe domain related Twitter streams across time and location. 
-It leverages the Twitter streaming api by filtering on a set of keywords, language and a geographical bounding box.
-As part of the pipeline, we infere groups (the occurence of a keyword combination) as well as the location for tweets
-which haven't been geo-tagged. The final output of the pipeline is an aggregation of keywords and groups across time 
-(or other dimensions such as location). 
+Fortis implements a data gathering and intelligence pipeline that collects, analyzes and aggregates information from social media outlets and other public / private web data sources 
 
-This pipeline is a useful tool for gathering intelligence. For instance, we used it for better planning the need for humatarian aid or for fighting epidemic diseases 
-(such as an outbreak of dengue fever). Infact, the keyword configuration of this repo was used to filter on dengue fever 
-related tweets within Indonesia and Sri Lanka. We then aggregated the data across time and location and visualized it 
-as part of a research board.
+## Configure and deploy the pipeline
 
-## Clone the repo
+### Pre-requisites to deploy
+
+* Windows 8.x or 10
+* Powershell Version 5. or higher - you can check the version by running `$PSVersionTable.PSVersion` - also ensure you allow the execution of remote signed scripts by running `Set-ExecutionPolicy RemoteSigned`
+* [Azure Powershell cmdlets](https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/) - you can install them by running `Install-Module AzureRM` 
+* [Git](https://git-scm.com/download/win) - ensure the path is known to Powershell - it is recommended to enable the [credentials cache](https://help.github.com/articles/caching-your-github-password-in-git/) as well as to install [posh-git](https://github.com/dahlbyk/posh-git): 
+```
+git config --global credential.helper wincred
+
+PowerShellGet\Install-Module posh-git -Scope CurrentUser
+Update-Module posh-git 
+```
+
+* [7-Zip](http://www.7-zip.org/) - it is expected to be installed to `C:\Program Files\7-Zip\7z.exe`. If you prefer another location, you can adjust the deployment script with your path [here](https://github.com/CatalystCode/project-fortis/blob/master/deployment/scripts/Deploy-FortisHdiOrchestration.ps1#L27)
+* [python 2.7.9](https://www.python.org/downloads/windows/) or higher
+
+### Cloning the repo
 in addition to just cloning the repo, you also need to fetch the submodules:
 ```
 git clone
@@ -20,14 +29,23 @@ git submodule foreach git checkout master
 git submodule foreach git pull origin
 ```
 
-## Configure and deploy the pipeline
-TBD
+### Obtaining tokens and keys
 
-You should obtain the Twitter tokens by creating a new app [here](https://apps.twitter.com/)
-As the final preparation, you need to obtain the bounding box for the geo-filtering of tweets:
-e.g. here the rough bounding box for Indonesia and Sri Lanka ``"19.938716 , 8.948158, 32.938335,25.129859"``
+* Get your azure subscription id by running `Get-AzureSubscription` in PowerShell
 
-Finally, navigate to  [deployment/scripts](./deployment/scripts) and open your PowerShell in elevated mode and execute  ``Deploy-FortisServices`` : 
+* Ensure you set 
+* Get the Twitter tokens for the location inference webjobs by creating a new app [here](https://apps.twitter.com/)
+* Get the Facebook token (TODO: describe how to do this!!!)
+* Get the tokens for the translation service (TODO: describe how to do this!!!)
+* Create a comma separated list of the most common words for your language of interest (e.g from [here](http://www.101languages.net/common-words/))
+* Create the bounding box for the geo-inference service. The format is `west_long, south_lat, east_long, north_lat`. You can obtain them through your preferred mapping tool. As an example, here the rough bounding box for Indonesia and Sri Lanka `19.938716, 8.948158, 32.938335,25.129859`
+
+
+### Running the deployment script
+
+* Navigate to  [deployment/scripts](./deployment/scripts) and open your PowerShell in elevated mode (Admin mode) 
+* Login to your Azure account by running `Login-AzureRmAccount`
+* Execute  `Deploy-FortisServices` : 
 
 ```
 .\Deploy-FortisServices `
