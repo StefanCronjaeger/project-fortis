@@ -338,7 +338,7 @@
     },
     {
       "apiVersion": "2015-01-01",
-      "name": "Postress",
+      "name": "Postgres",
       "type": "Microsoft.Resources/deployments",
       "dependsOn": [
       ],

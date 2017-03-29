@@ -105,7 +105,7 @@ if (($DeployServices -eq $true) -Or ($DeployHdi -eq $true) -Or ($DeploySites -eq
 	$ArtifactStagingDirectory = "..\$ArtifactStagingDirectoryName"
 	Push-Location
 	cd ..
-	md $ArtifactStagingDirectoryName
+	new-item $ArtifactStagingDirectoryName -itemtype directory -ErrorAction "Ignore"
 	copy ..\*\deploy\*.json .\$ArtifactStagingDirectoryName\
 	ls .\$ArtifactStagingDirectoryName\.
 	Pop-Location
@@ -144,7 +144,7 @@ if ($DeployServices -eq $true) {
 		New-AzureStorageContainer -Name $StorageContainerName -Context $DeploymentStorageAccountContext -Permission Container -ErrorAction SilentlyContinue *>&1
 		Set-AzureStorageBlobContent -File $SetupScript -Blob $SetupScript -Container $StorageContainerName -Context $DeploymentStorageAccountContext -Force
 
-		Remove-Item "$SetupScript"
+		Remove-Item "$SetupScript" 
 		copy "$SetupScript.bck" $SetupScript
 
 		$ScriptUris = "https://$DeploymentStorageAccountName.blob.core.windows.net/$StorageContainerName/$SetupScript"
@@ -286,7 +286,7 @@ if ($DeploySites -eq $true) {
     git push azure master 
     cd..
 
-    cd fortis-interface
+    cd fortis-interfaces
     git remote remove azure
     git remote add azure https://$AzureGitAccount@$DashboardWebSiteName.scm.azurewebsites.net:443/$DashboardWebSiteName.git
     git push azure master

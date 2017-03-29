@@ -3,11 +3,11 @@ Fortis implements a data gathering and intelligence pipeline that collects, anal
 
 ## Configure and deploy the pipeline
 
-### Pre-requisites to deploy
+### Prerequisites to deploy
 
 * Windows 8.x or 10
 * Powershell Version 5. or higher - you can check the version by running `$PSVersionTable.PSVersion` - also ensure you allow the execution of remote signed scripts by running `Set-ExecutionPolicy RemoteSigned`
-* [Azure Powershell cmdlets](https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/) - you can install them by running `Install-Module AzureRM` 
+* [Azure Powershell cmdlets](https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/) - you can install them by running `Install-Module Azure` and `Install-Module AzureRM` 
 * [Git](https://git-scm.com/download/win) - ensure the path is known to Powershell - it is recommended to enable the [credentials cache](https://help.github.com/articles/caching-your-github-password-in-git/) as well as to install [posh-git](https://github.com/dahlbyk/posh-git): 
 ```
 git config --global credential.helper wincred
@@ -18,6 +18,14 @@ Update-Module posh-git
 
 * [7-Zip](http://www.7-zip.org/) - it is expected to be installed to `C:\Program Files\7-Zip\7z.exe`. If you prefer another location, you can adjust the deployment script with your path [here](https://github.com/CatalystCode/project-fortis/blob/master/deployment/scripts/Deploy-FortisHdiOrchestration.ps1#L27)
 * [python 2.7.9](https://www.python.org/downloads/windows/) or higher
+
+### Chocolatey script to install the prerequisites
+
+```
+choco install git.install
+choco install 7zip.install 
+choco install python2 
+```
 
 ### Cloning the repo
 in addition to just cloning the repo, you also need to fetch the submodules:
@@ -30,10 +38,8 @@ git submodule foreach git pull origin
 ```
 
 ### Obtaining tokens and keys
-
+* Login to your Azure account by running `Login-AzureRmAccount` and `Add-AzureAccount`
 * Get your azure subscription id by running `Get-AzureSubscription` in PowerShell
-
-* Ensure you set 
 * Get the Twitter tokens for the location inference webjobs by creating a new app [here](https://apps.twitter.com/)
 * Get the Facebook token (TODO: describe how to do this!!!)
 * Get the tokens for the translation service (TODO: describe how to do this!!!)
@@ -44,7 +50,7 @@ git submodule foreach git pull origin
 ### Running the deployment script
 
 * Navigate to  [deployment/scripts](./deployment/scripts) and open your PowerShell in elevated mode (Admin mode) 
-* Login to your Azure account by running `Login-AzureRmAccount`
+* Login to your Azure account by running `Login-AzureRmAccount` (if you haven't already done so)
 * Execute  `Deploy-FortisServices` : 
 
 ```
