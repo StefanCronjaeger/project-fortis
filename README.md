@@ -6,8 +6,9 @@ Fortis implements a data gathering and intelligence pipeline that collects, anal
 ### Prerequisites to deploy
 
 * Windows 8.x or 10
+* Define your [deployment credentials for Azure App Services](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-deployment-credentials)
 * Powershell Version 5. or higher - you can check the version by running `$PSVersionTable.PSVersion` - also ensure you allow the execution of remote signed scripts by running `Set-ExecutionPolicy RemoteSigned`
-* [Azure Powershell cmdlets](https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/) - you can install them by running `Install-Module Azure` and `Install-Module AzureRM` 
+* [Azure Powershell cmdlets](https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/) - if you have `PowerShellGet` installed, you can get them by running `Install-Module Azure` and `Install-Module AzureRM` - otherwise use the [Web Platform Installer](https://www.microsoft.com/web/downloads/platform.aspx) to install the cmdlets.
 * [Git](https://git-scm.com/download/win) - ensure the path is known to Powershell - it is recommended to enable the [credentials cache](https://help.github.com/articles/caching-your-github-password-in-git/) as well as to install [posh-git](https://github.com/dahlbyk/posh-git): 
 ```
 git config --global credential.helper wincred
@@ -60,7 +61,7 @@ git submodule foreach git pull origin
 	-SkuCapacity 1 `
 	-GeoTwitSkuName "S2" `
 	-GeoTwitSkuCapacity 1 `
-    -DeploymentPostFix <YOUR_UNIQUE_INSTANCE_ID> `
+    -DeploymentPostFix <YOUR_UNIQUE_INSTANCE_ID> ` #string must be between 1-6 alpha-numeric characters only
 	-ResourceGroupName <YOUR_RESOURCE_GROUP_NAME> `
 	-Location "West Europe" `
 	-GeoTwitConsumerKey <YOUR_TOKEN> `
@@ -77,7 +78,7 @@ git submodule foreach git pull origin
 	-TranslationServiceClientId <YOUR_TRANSLATION_ID> `
 	-TranslationServiceClientSecret <YOUR_TRANSLATION_TOKEN> `
 	-HdiPassword <YOUR_STRONG_HDI_CLUSTER_PASSWORD> `
-	-AzureGitAccount <YOUR_AZURE_GIT_USER> `
+	-AzureGitAccount <YOUR_AZURE_GIT_USER> ` # your Azure App Services deployment username 
     -DeployHdi $true `
 	-DeployServices $true `
 	-DeploySites $true  `

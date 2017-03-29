@@ -6,9 +6,9 @@ Param(
 	[int][Parameter(Mandatory=$true)] $SkuCapacity,
 	[string] [Parameter(Mandatory=$true)]  $GeoTwitSkuName,
 	[int][Parameter(Mandatory=$true)] $GeoTwitSkuCapacity,
-    [string] [Parameter(Mandatory=$true)] $DeploymentPostFix,
+    [string] [Parameter(Mandatory=$true)][ValidateLength(1,6)] $DeploymentPostFix,
     [string] [Parameter(Mandatory=$true)] $Location,
-    [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
+    [string] [Parameter(Mandatory=$true)] [ValidateLength(1,14)] $ResourceGroupName,
     [string] [Parameter(Mandatory=$true)] $SubscriptionId,
     [string] [Parameter(Mandatory=$true)] $GeoTwitLanguageFilter,
     [string] [Parameter(Mandatory=$true)] $GeoTwitFilterKeywords,
@@ -59,14 +59,18 @@ function Convert-HashToString
     return $hashstr
 }
 
-#configure powershell with Azure modules
-Import-Module Azure
-Import-Module Azure -ErrorAction SilentlyContinue
+if (Get-Module -ListAvailable -Name Azure) {
+    #configure powershell with Azure modules
+	Import-Module Azure -ErrorAction SilentlyContinue
+} else {
+    Write-Host "Azure Module does not exist - see https://docs.microsoft.com/en-us/powershell/azureps-cmdlets-docs/ for installation guidance"
+	exit
+}
+
 
 Write-Host "This script needs to run in an elevated shell (as Administrator)"
 Write-Host "Before you start, you need to do the following things:"
-Write-Host "1.) Install python 2.7.9 and pip"
-Write-Host "2.) Login-AzureRmAccount"
+Write-Host "1.) Login-AzureRmAccount"
 Write-Host "---Press a key when ready---"
 $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
@@ -95,7 +99,9 @@ function Create-StorageAccountIfNotExist {
 
 if (($DeployServices -eq $true) -Or ($DeployHdi -eq $true) -Or ($DeploySites -eq $true)) {
 	$DeploymentResourceGroupName = $ResourceGroupName+"-Deployment"
-	$DeploymentStorageAccountName = ($ResourceGroupName + "deployment").ToLower()
+	$ResourceGroupNameStoragePrefix = $ResourceGroupName
+	$ResourceGroupNameStoragePrefix = $ResourceGroupNameStoragePrefix -Replace "[^a-zA-Z0-9]", ''
+	$DeploymentStorageAccountName = ($ResourceGroupNameStoragePrefix + "deployment").ToLower()
 	Create-StorageAccountIfNotExist $DeploymentResourceGroupName $DeploymentStorageAccountName
 	$DeploymentStorageAccountContext = (Get-AzureRmStorageAccount | Where-Object{$_.StorageAccountName -eq $DeploymentStorageAccountName}).Context    
 	$DeploymentStorageAccountKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $DeploymentResourceGroupName -AccountName $DeploymentStorageAccountName).Value[0]
