@@ -106,6 +106,7 @@ CREATE TABLE public.localities
   population integer,
   ar_name text,
   ur_name text,
+  id_name text,
   CONSTRAINT localities_pkey PRIMARY KEY (geonameid,originalsource) 
 )
 WITH (
@@ -145,6 +146,7 @@ CREATE TABLE public.tilemessages
   en_sentence text,
   ar_sentence text,
   ur_sentence text,
+  id_sentence text,
   full_text text,
   link text,
   original_sources text,
@@ -184,6 +186,11 @@ CREATE INDEX tilemessages_ar_sentence_idx
   ON public.tilemessages
   USING btree
   (ar_sentence COLLATE pg_catalog."default");
+
+CREATE INDEX tilemessages_id_sentence_idx
+  ON public.tilemessages
+  USING btree
+  (id_sentence COLLATE pg_catalog."default");
 
 -- Index: public.tilemessages_en_sentence_idx
 
